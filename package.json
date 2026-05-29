@@ -1,0 +1,16 @@
+{
+  "name": "omtodo",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/frontend",
+    "apps/backend"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspace omtodo-frontend",
+    "dev:backend": "npm run dev --workspace omtodo-backend",
+    "build": "npm run build --workspace omtodo-frontend && npm run build --workspace omtodo-backend",
+    "test": "npm run test --workspace omtodo-frontend && npm run test --workspace omtodo-backend",
+    "lint": "npm run lint --workspace omtodo-frontend"
+  }
+}

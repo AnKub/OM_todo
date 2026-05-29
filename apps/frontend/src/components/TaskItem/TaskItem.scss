@@ -1,0 +1,58 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.task-item {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border-radius: $radius-panel;
+  background: $color-surface-plain;
+  border: 1px solid rgba($color-border-strong, 0.08);
+  animation: fade-up 280ms ease;
+}
+
+.task-item__title,
+.task-item__copy {
+  margin: 0;
+}
+
+.task-item__title {
+  font-size: 1.06rem;
+  color: $color-ink;
+}
+
+.task-item__copy {
+  color: $color-muted;
+  line-height: 1.6;
+}
+
+.task-item__footer,
+.task-item__meta,
+.task-item__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.task-item__footer {
+  justify-content: space-between;
+}
+
+.task-item__meta {
+  align-items: center;
+}
+
+.task-item__chip {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: $color-surface-chip;
+  color: $color-warm-muted;
+  font-size: 0.86rem;
+}
+
+@include mobile {
+  .task-item__footer,
+  .task-item__actions {
+    flex-direction: column;
+  }
+}

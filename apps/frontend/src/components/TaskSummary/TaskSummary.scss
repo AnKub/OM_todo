@@ -1,0 +1,39 @@
+@use '../../styles/tokens' as *;
+
+.task-summary__title,
+.task-summary__copy,
+.task-summary__label {
+  margin: 0;
+}
+
+.task-summary__title {
+  color: $color-ink;
+}
+
+.task-summary__copy,
+.task-summary__label {
+  color: $color-muted;
+  line-height: 1.6;
+}
+
+.task-summary__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.task-summary__tile {
+  flex: 1 1 140px;
+  padding: 16px;
+  border-radius: $radius-panel;
+  background: $color-surface-soft;
+  border: 1px solid rgba($color-border-strong, 0.08);
+}
+
+.task-summary__number {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: $color-ink;
+}

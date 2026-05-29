@@ -1,0 +1,28 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.filter-bar__title,
+.filter-bar__copy {
+  margin: 0;
+}
+
+.filter-bar__title {
+  color: $color-ink;
+}
+
+.filter-bar__copy {
+  color: $color-muted;
+  line-height: 1.6;
+}
+
+.filter-bar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@include mobile {
+  .filter-bar__actions {
+    flex-direction: column;
+  }
+}

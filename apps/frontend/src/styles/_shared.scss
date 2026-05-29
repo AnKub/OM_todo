@@ -1,0 +1,75 @@
+@use './tokens' as *;
+@use './mixins' as *;
+
+.card-surface,
+.panel-card {
+  @include card-surface;
+}
+
+.content-stack {
+  display: grid;
+  gap: 20px;
+}
+
+.section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.section-head__title,
+.section-head__copy {
+  margin: 0;
+}
+
+.section-head__title {
+  color: $color-ink;
+}
+
+.section-head__copy {
+  color: $color-muted;
+  line-height: 1.6;
+}
+
+.button {
+  @include button-shell;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button--primary {
+  background: $color-accent;
+  color: $color-surface-soft;
+  box-shadow: 0 14px 26px rgba($color-accent, 0.22);
+}
+
+.button--secondary {
+  background: $color-ink;
+  color: $color-surface-soft;
+}
+
+.button--ghost,
+.button--filter {
+  background: $color-surface-soft;
+  color: $color-muted-strong;
+  border-color: rgba($color-border-strong, 0.14);
+}
+
+.button--filter.is-active {
+  background: $color-highlight;
+  color: $color-ink;
+}
+
+@include mobile {
+  .button {
+    width: 100%;
+  }
+
+  .section-head {
+    flex-direction: column;
+  }
+}

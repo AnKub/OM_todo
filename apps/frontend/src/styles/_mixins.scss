@@ -1,0 +1,30 @@
+@use './tokens' as *;
+
+@mixin card-surface {
+  border-radius: $radius-card;
+  background: rgba($color-surface-warm, 0.9);
+  border: 1px solid rgba($color-border-strong, 0.12);
+  box-shadow: $shadow-card;
+  backdrop-filter: blur(14px);
+}
+
+@mixin button-shell {
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: $radius-control;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+@mixin mobile {
+  @media (max-width: $breakpoint-mobile) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: $breakpoint-tablet) {
+    @content;
+  }
+}
