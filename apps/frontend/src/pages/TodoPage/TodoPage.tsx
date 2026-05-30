@@ -1,16 +1,86 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AddTaskForm, FilterBar, TaskList, TaskSummary } from '../../components'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
+import { taskApi } from '../../services/taskApi'
 import type { Task, TaskFilter } from '../../types/task'
 import './TodoPage.scss'
 
-const initialTasks: Task[] = []
-
 export function TodoPage() {
   const [draft, setDraft] = useState('')
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isCreating, setIsCreating] = useState(false)
+  const [removingTaskId, setRemovingTaskId] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   const [currentFilter, setCurrentFilter] = useLocalStorage<TaskFilter>('omtodo-filter', 'all')
 
-  const visibleTasks = initialTasks.filter((task) => {
+  async function loadTasks() {
+    setIsLoading(true)
+    setErrorMessage('')
+
+    try {
+      const nextTasks = await taskApi.fetchTasks()
+      setTasks(nextTasks)
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message)
+      } else {
+        setErrorMessage('Unable to load tasks right now.')
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function handleCreateTask() {
+    const title = draft.trim()
+
+    if (!title) {
+      setErrorMessage('Task title cannot be empty.')
+      return
+    }
+
+    setIsCreating(true)
+    setErrorMessage('')
+
+    try {
+      const newTask = await taskApi.createTask({ title })
+      setTasks((currentTasks) => [newTask, ...currentTasks])
+      setDraft('')
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message)
+      } else {
+        setErrorMessage('Could not create task.')
+      }
+    } finally {
+      setIsCreating(false)
+    }
+  }
+
+  async function handleDeleteTask(taskId: string) {
+    setRemovingTaskId(taskId)
+    setErrorMessage('')
+
+    try {
+      await taskApi.deleteTask(taskId)
+      setTasks((currentTasks) => currentTasks.filter((task) => task.id !== taskId))
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message)
+      } else {
+        setErrorMessage('Could not delete task.')
+      }
+    } finally {
+      setRemovingTaskId('')
+    }
+  }
+
+  useEffect(() => {
+    void loadTasks()
+  }, [])
+
+  const visibleTasks = tasks.filter((task) => {
     if (currentFilter === 'active') {
       return !task.completed
     }
@@ -22,15 +92,15 @@ export function TodoPage() {
     <main className="todo-page">
       <div className="todo-page__frame">
         <section className="todo-page__hero card-surface">
-          <p className="todo-page__eyebrow">Junior Full Stack Test</p>
-          <h1 className="todo-page__title">Todo flow with a clean React and TypeScript setup.</h1>
+          <p className="todo-page__eyebrow">Todo app</p>
+          <h1 className="todo-page__title">Keep your tasks in one place.</h1>
           <p className="todo-page__description">
-            The project skeleton is ready for live API integration, editing, smooth task appearance, local filter persistence and responsive states.
+            This page already loads tasks from the server. Now the form can create, and the list can delete.
           </p>
           <div className="todo-page__highlights">
-            <span className="todo-page__pill">Responsive layout</span>
-            <span className="todo-page__pill">Edit-ready task cards</span>
-            <span className="todo-page__pill">Filter persisted locally</span>
+            <span className="todo-page__pill">Responsive base</span>
+            <span className="todo-page__pill">API connected</span>
+            <span className="todo-page__pill">Filter saved locally</span>
           </div>
         </section>
 
@@ -39,38 +109,57 @@ export function TodoPage() {
             <section className="card-surface todo-page__section">
               <div className="section-head">
                 <div>
-                  <h2 className="section-head__title">Task composer</h2>
-                  <p className="section-head__copy">This section will receive validation, API calls and error handling in the next pass.</p>
+                  <h2 className="section-head__title">New task</h2>
+                  <p className="section-head__copy">Write a task and send it straight to the backend.</p>
                 </div>
                 <span className="todo-page__counter">{visibleTasks.length}</span>
               </div>
 
-              <AddTaskForm value={draft} onChange={setDraft} onSubmit={() => undefined} />
+              <AddTaskForm
+                value={draft}
+                onChange={setDraft}
+                onSubmit={handleCreateTask}
+                isSubmitting={isCreating}
+              />
             </section>
 
             <section className="card-surface todo-page__section">
               <div className="section-head">
                 <div>
-                  <h2 className="section-head__title">Task board</h2>
-                  <p className="section-head__copy">The list area already has slots for empty, loading, error and populated states.</p>
+                  <h2 className="section-head__title">Tasks</h2>
+                  <p className="section-head__copy">This list reads data from the backend and now also removes tasks.</p>
                 </div>
               </div>
 
-              <TaskList tasks={visibleTasks} onDelete={() => undefined} onEdit={() => undefined} />
+              {isLoading ? (
+                <p className="section-head__copy">Loading ...</p>
+              ) : errorMessage ? (
+                <div className="content-stack">
+                  <p className="section-head__copy">{errorMessage}</p>
+                  <button className="button button--secondary" type="button" onClick={() => void loadTasks()}>
+                    Try again
+                  </button>
+                </div>
+              ) : (
+                <TaskList
+                  tasks={visibleTasks}
+                  onDelete={handleDeleteTask}
+                  onEdit={() => undefined}
+                  removingTaskId={removingTaskId}
+                />
+              )}
             </section>
           </div>
 
           <div className="content-stack">
-            <TaskSummary activeCount={visibleTasks.length} totalCount={initialTasks.length} />
+            <TaskSummary activeCount={visibleTasks.length} totalCount={tasks.length} />
             <FilterBar currentFilter={currentFilter} onChange={setCurrentFilter} />
 
             <section className="card-surface todo-page__section">
               <div className="section-head">
                 <div>
-                  <h2 className="section-head__title">What comes next</h2>
-                  <p className="section-head__copy">
-                    Next we wire the backend endpoints, task fetching, add flow, delete flow, editing flow and interaction tests.
-                  </p>
+                  <h2 className="section-head__title">Next step</h2>
+                  <p className="section-head__copy">We will connect editing tasks next.</p>
                 </div>
               </div>
             </section>

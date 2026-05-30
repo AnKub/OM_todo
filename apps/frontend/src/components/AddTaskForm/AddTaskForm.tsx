@@ -32,12 +32,15 @@ export function AddTaskForm({
           onChange={(event) => onChange(event.target.value)}
         />
       </label>
-      <p className="add-task-form__note">Validation, optimistic UI and API wiring will be connected next.</p>
+
+      <p className="add-task-form__note">One task at a time. World domination can wait.</p>
+
       <div className="add-task-form__actions">
         <button className="button button--primary" type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Saving...' : 'Add task'}
+          {isSubmitting ? 'Adding...' : 'Add task'}
         </button>
-        <button className="button button--ghost" type="button" onClick={() => onChange('')}>
+
+        <button className="button button--ghost" type="button" onClick={() => onChange('')} disabled={isSubmitting}>
           Clear
         </button>
       </div>

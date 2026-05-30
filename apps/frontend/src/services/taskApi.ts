@@ -2,45 +2,54 @@ import type { CreateTaskInput, Task, UpdateTaskInput } from '../types/task'
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001'
 
-async function request<T>(path: string, options?: RequestInit) {
-  const response = await fetch(`${API_URL}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options?.headers ?? {}),
-    },
-    ...options,
-  })
+async function getJson<T>(response: Response): Promise<T> {
+  const data = await response.json()
 
   if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`)
+    throw new Error(data.message || 'Something went wrong')
   }
 
-  if (response.status === 204) {
-    return undefined as T
-  }
-
-  return (await response.json()) as T
+  return data
 }
 
 export const taskApi = {
-  fetchTasks() {
-    return request<Task[]>('/tasks')
+  async fetchTasks() {
+    const response = await fetch(`${API_URL}/tasks`)
+    return getJson<Task[]>(response)
   },
-  createTask(payload: CreateTaskInput) {
-    return request<Task>('/tasks', {
-      body: JSON.stringify(payload),
+
+  async createTask(payload: CreateTaskInput) {
+    const response = await fetch(`${API_URL}/tasks`, {
       method: 'POST',
-    })
-  },
-  updateTask(taskId: string, payload: UpdateTaskInput) {
-    return request<Task>(`/tasks/${taskId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(payload),
-      method: 'PATCH',
     })
+
+    return getJson<Task>(response)
   },
-  deleteTask(taskId: string) {
-    return request<void>(`/tasks/${taskId}`, {
+
+  async updateTask(taskId: string, payload: UpdateTaskInput) {
+    const response = await fetch(`${API_URL}/tasks/${taskId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+
+    return getJson<Task>(response)
+  },
+
+  async deleteTask(taskId: string) {
+    const response = await fetch(`${API_URL}/tasks/${taskId}`, {
       method: 'DELETE',
     })
+
+    if (!response.ok) {
+      const data = await response.json()
+      throw new Error(data.message || 'Something went wrong')
+    }
   },
 }
