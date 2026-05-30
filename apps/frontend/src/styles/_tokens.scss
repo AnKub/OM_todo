@@ -1,20 +1,52 @@
-$color-ink: #2f221d;
-$color-muted-strong: #5b463c;
-$color-muted: #6c5448;
-$color-warm-muted: #8a5c2f;
-$color-accent: #e15f41;
-$color-highlight: #ffd466;
-$color-border-strong: #7b5336;
-$color-surface-warm: #fffcf7;
-$color-surface-soft: #fff8f0;
-$color-surface-plain: #fffdfa;
-$color-surface-pill: #fff6ea;
-$color-surface-chip: #fff1db;
-$color-canvas-bright: #fdf6ec;
-$color-canvas-base: #f7efe5;
 $radius-card: 28px;
 $radius-panel: 22px;
 $radius-control: 18px;
-$shadow-card: 0 24px 60px rgba(88, 62, 41, 0.08);
 $breakpoint-tablet: 920px;
 $breakpoint-mobile: 640px;
+
+:root {
+	--font-display: 'Fraunces', 'Georgia', serif;
+	--font-body: 'Manrope', 'Segoe UI', sans-serif;
+}
+
+[data-theme='light'] {
+	--color-main: #f9f6f0;
+	--color-surface: #ffffff;
+	--color-surface-2: #f1ece3;
+	--color-text: #1a1f2c;
+	--color-text-muted: #656e83;
+	--color-accent: #4a5759;
+	--color-accent-strong: #364143;
+	--color-accent-contrast: #f9f6f0;
+	--color-accent-soft: rgba(74, 87, 89, 0.14);
+	--color-success: #6a994e;
+	--color-success-soft: rgba(106, 153, 78, 0.16);
+	--color-border: rgba(26, 31, 44, 0.1);
+	--color-border-strong: rgba(26, 31, 44, 0.16);
+	--color-pill: #ece5da;
+	--color-overlay-a: rgba(106, 153, 78, 0.16);
+	--color-overlay-b: rgba(74, 87, 89, 0.12);
+	--shadow-card: 0 28px 60px rgba(33, 39, 52, 0.1);
+	--shadow-button: 0 16px 30px rgba(74, 87, 89, 0.18);
+}
+
+[data-theme='dark'] {
+	--color-main: #191e1a;
+	--color-surface: #222924;
+	--color-surface-2: #283129;
+	--color-text: #e3e8e4;
+	--color-text-muted: #707d73;
+	--color-accent: #d4a373;
+	--color-accent-strong: #be9165;
+	--color-accent-contrast: #191e1a;
+	--color-accent-soft: rgba(212, 163, 115, 0.14);
+	--color-success: #52b788;
+	--color-success-soft: rgba(82, 183, 136, 0.18);
+	--color-border: rgba(227, 232, 228, 0.1);
+	--color-border-strong: rgba(227, 232, 228, 0.16);
+	--color-pill: #2b342d;
+	--color-overlay-a: rgba(82, 183, 136, 0.16);
+	--color-overlay-b: rgba(212, 163, 115, 0.14);
+	--shadow-card: 0 28px 60px rgba(0, 0, 0, 0.28);
+	--shadow-button: 0 16px 30px rgba(0, 0, 0, 0.22);
+}

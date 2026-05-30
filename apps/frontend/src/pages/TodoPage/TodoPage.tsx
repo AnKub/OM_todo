@@ -5,6 +5,8 @@ import { taskApi } from '../../services/taskApi'
 import type { Task, TaskFilter } from '../../types/task'
 import './TodoPage.scss'
 
+type ThemeMode = 'light' | 'dark'
+
 export function TodoPage() {
   const [draft, setDraft] = useState('')
   const [tasks, setTasks] = useState<Task[]>([])
@@ -15,6 +17,7 @@ export function TodoPage() {
   const [pageError, setPageError] = useState('')
   const [actionError, setActionError] = useState('')
   const [currentFilter, setCurrentFilter] = useLocalStorage<TaskFilter>('omtodo-filter', 'all')
+  const [theme, setTheme] = useLocalStorage<ThemeMode>('omtodo-theme', 'dark')
 
   async function loadTasks() {
     setIsLoading(true)
@@ -33,8 +36,6 @@ export function TodoPage() {
       setIsLoading(false)
     }
   }
-
-  // -----------тут створення завадання 
 
   async function handleCreateTask() {
     const title = draft.trim()
@@ -62,8 +63,6 @@ export function TodoPage() {
     }
   }
 
- // -----------тут про логіку видалення завадання 
-
   async function handleDeleteTask(taskId: string) {
     setRemovingTaskId(taskId)
     setActionError('')
@@ -81,8 +80,6 @@ export function TodoPage() {
       setRemovingTaskId('')
     }
   }
-
-  // -----------тут про внесення змін 
 
   async function handleEditTask(taskId: string) {
     const task = tasks.find((item) => item.id === taskId)
@@ -134,8 +131,6 @@ export function TodoPage() {
     void loadTasks()
   }, [])
 
-// спрощений приклад реалізації фільтрації лише виконані чи всі
-
   const visibleTasks = tasks.filter((task) => {
     if (currentFilter === 'active') {
       return !task.completed
@@ -145,10 +140,30 @@ export function TodoPage() {
   })
 
   return (
-    <main className="todo-page">
+    <main className="todo-page" data-theme={theme}>
       <div className="todo-page__frame">
         <section className="todo-page__hero card-surface">
-          <p className="todo-page__eyebrow">Todo app</p>
+          <div className="todo-page__hero-top">
+            <p className="todo-page__eyebrow">Todo app</p>
+
+            <div className="todo-page__theme-switch" role="group" aria-label="Switch color theme">
+              <button
+                className={`todo-page__theme-button ${theme === 'light' ? 'is-active' : ''}`}
+                type="button"
+                onClick={() => setTheme('light')}
+              >
+                Light
+              </button>
+              <button
+                className={`todo-page__theme-button ${theme === 'dark' ? 'is-active' : ''}`}
+                type="button"
+                onClick={() => setTheme('dark')}
+              >
+                Dark
+              </button>
+            </div>
+          </div>
+
           <h1 className="todo-page__title">Keep your tasks in one place.</h1>
           <p className="todo-page__description">
             This page already loads tasks from the server. Now it can create, remove and rename them too.
@@ -178,7 +193,7 @@ export function TodoPage() {
                 isSubmitting={isCreating}
               />
 
-              {actionError ? <p className="section-head__copy">{actionError}</p> : null}
+              {actionError ? <p className="todo-page__message todo-page__message--error">{actionError}</p> : null}
             </section>
 
             <section className="card-surface todo-page__section">
@@ -190,10 +205,10 @@ export function TodoPage() {
               </div>
 
               {isLoading ? (
-                <p className="section-head__copy">Loading ...</p>
+                <p className="todo-page__message">Loading ...</p>
               ) : pageError ? (
                 <div className="content-stack">
-                  <p className="section-head__copy">{pageError}</p>
+                  <p className="todo-page__message todo-page__message--error">{pageError}</p>
                   <button className="button button--secondary" type="button" onClick={() => void loadTasks()}>
                     Try again
                   </button>
@@ -217,8 +232,10 @@ export function TodoPage() {
             <section className="card-surface todo-page__section">
               <div className="section-head">
                 <div>
-                  <h2 className="section-head__title">Next step</h2>
-                  <p className="section-head__copy">After this we can move to frontend tests and visual polish.</p>
+                  <h2 className="section-head__title">Visual direction</h2>
+                  <p className="section-head__copy">
+                    Obsidian and Deep Forest for dark mode. Desert Sand and Royal Indigo for light mode.
+                  </p>
                 </div>
               </div>
             </section>

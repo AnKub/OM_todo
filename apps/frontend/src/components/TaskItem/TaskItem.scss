@@ -6,9 +6,21 @@
   gap: 16px;
   padding: 18px;
   border-radius: $radius-panel;
-  background: $color-surface-plain;
-  border: 1px solid rgba($color-border-strong, 0.08);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   animation: fade-up 280ms ease;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.task-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-button);
+}
+
+.task-item__content {
+  display: grid;
+  gap: 10px;
 }
 
 .task-item__title,
@@ -18,11 +30,11 @@
 
 .task-item__title {
   font-size: 1.06rem;
-  color: $color-ink;
+  color: var(--color-text);
 }
 
 .task-item__copy {
-  color: $color-muted;
+  color: var(--color-text-muted);
   line-height: 1.6;
 }
 
@@ -45,8 +57,9 @@
 .task-item__chip {
   padding: 8px 12px;
   border-radius: 999px;
-  background: $color-surface-chip;
-  color: $color-warm-muted;
+  background: var(--color-pill);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
   font-size: 0.86rem;
 }
 

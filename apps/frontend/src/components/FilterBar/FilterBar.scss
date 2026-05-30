@@ -1,5 +1,9 @@
-@use '../../styles/tokens' as *;
 @use '../../styles/mixins' as *;
+
+.filter-bar {
+  display: grid;
+  gap: 18px;
+}
 
 .filter-bar__title,
 .filter-bar__copy {
@@ -7,11 +11,11 @@
 }
 
 .filter-bar__title {
-  color: $color-ink;
+  color: var(--color-text);
 }
 
 .filter-bar__copy {
-  color: $color-muted;
+  color: var(--color-text-muted);
   line-height: 1.6;
 }
 

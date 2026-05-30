@@ -4,10 +4,6 @@
 .todo-page {
   min-height: 100vh;
   padding: 32px 20px 48px;
-  background:
-    radial-gradient(circle at top left, rgba($color-accent, 0.22), transparent 26%),
-    radial-gradient(circle at top right, rgba($color-highlight, 0.24), transparent 24%),
-    linear-gradient(180deg, $color-canvas-bright 0%, $color-canvas-base 100%);
 }
 
 .todo-page__frame {
@@ -18,34 +14,60 @@
 }
 
 .todo-page__hero {
+  position: relative;
+  overflow: hidden;
+  padding: 28px;
   display: grid;
   gap: 18px;
+  isolation: isolate;
+}
+
+.todo-page__hero::before {
+  content: '';
+  position: absolute;
+  inset: auto -8% -40% auto;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--color-overlay-b) 0%, transparent 68%);
+  z-index: -1;
+  animation: orb-float 6s ease-in-out infinite;
+}
+
+.todo-page__hero-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
 }
 
 .todo-page__eyebrow,
-.todo-page__description {
+.todo-page__description,
+.todo-page__message {
   margin: 0;
 }
 
 .todo-page__eyebrow {
-  font-size: 0.85rem;
-  letter-spacing: 0.14em;
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: $color-warm-muted;
+  color: var(--color-accent);
 }
 
 .todo-page__title {
   margin: 0;
-  font-size: clamp(2.3rem, 4vw, 4.6rem);
-  line-height: 0.95;
-  color: $color-ink;
+  max-width: 12ch;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 4vw, 4.8rem);
+  line-height: 0.94;
+  color: var(--color-text);
 }
 
 .todo-page__description {
-  max-width: 52rem;
+  max-width: 56rem;
   font-size: 1.02rem;
-  line-height: 1.7;
-  color: $color-muted-strong;
+  line-height: 1.75;
+  color: var(--color-text-muted);
 }
 
 .todo-page__highlights {
@@ -57,9 +79,40 @@
 .todo-page__pill {
   padding: 10px 16px;
   border-radius: 999px;
-  background: $color-surface-pill;
-  color: $color-muted-strong;
+  background: var(--color-pill);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
   font-size: 0.92rem;
+}
+
+.todo-page__theme-switch {
+  display: inline-flex;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+}
+
+.todo-page__theme-button {
+  min-width: 84px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.todo-page__theme-button:hover {
+  transform: translateY(-1px);
+}
+
+.todo-page__theme-button.is-active {
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
 }
 
 .todo-page__workspace {
@@ -76,13 +129,23 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 48px;
-  height: 48px;
+  min-width: 52px;
+  height: 52px;
   padding: 0 16px;
   border-radius: 16px;
-  background: $color-ink;
-  color: $color-surface-soft;
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
   font-weight: 700;
+  box-shadow: var(--shadow-button);
+}
+
+.todo-page__message {
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.todo-page__message--error {
+  color: var(--color-accent);
 }
 
 @include tablet {
@@ -94,6 +157,22 @@
 @include mobile {
   .todo-page {
     padding: 18px 14px 32px;
+  }
+
+  .todo-page__hero {
+    padding: 20px;
+  }
+
+  .todo-page__hero-top {
+    flex-direction: column;
+  }
+
+  .todo-page__theme-switch {
+    width: 100%;
+  }
+
+  .todo-page__theme-button {
+    flex: 1;
   }
 
   .todo-page__section {

@@ -2,9 +2,9 @@
 
 @mixin card-surface {
   border-radius: $radius-card;
-  background: rgba($color-surface-warm, 0.9);
-  border: 1px solid rgba($color-border-strong, 0.12);
-  box-shadow: $shadow-card;
+  background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-surface-2) 100%);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
   backdrop-filter: blur(14px);
 }
 
@@ -14,7 +14,18 @@
   border-radius: $radius-control;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    opacity 180ms ease;
+}
+
+@mixin focus-ring {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
 }
 
 @mixin mobile {

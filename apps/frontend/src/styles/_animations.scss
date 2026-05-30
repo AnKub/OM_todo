@@ -9,3 +9,17 @@
     transform: translateY(0);
   }
 }
+
+@keyframes orb-float {
+  from {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-6px) scale(1.03);
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+  }
+}
