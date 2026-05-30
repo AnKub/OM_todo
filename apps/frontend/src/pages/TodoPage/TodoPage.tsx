@@ -11,37 +11,41 @@ export function TodoPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
   const [removingTaskId, setRemovingTaskId] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
+  const [editingTaskId, setEditingTaskId] = useState('')
+  const [pageError, setPageError] = useState('')
+  const [actionError, setActionError] = useState('')
   const [currentFilter, setCurrentFilter] = useLocalStorage<TaskFilter>('omtodo-filter', 'all')
 
   async function loadTasks() {
     setIsLoading(true)
-    setErrorMessage('')
+    setPageError('')
 
     try {
       const nextTasks = await taskApi.fetchTasks()
       setTasks(nextTasks)
     } catch (error) {
       if (error instanceof Error) {
-        setErrorMessage(error.message)
+        setPageError(error.message)
       } else {
-        setErrorMessage('Unable to load tasks right now.')
+        setPageError('Could not load tasks right now.')
       }
     } finally {
       setIsLoading(false)
     }
   }
 
+  // -----------тут створення завадання 
+
   async function handleCreateTask() {
     const title = draft.trim()
 
     if (!title) {
-      setErrorMessage('Task title cannot be empty.')
+      setActionError('Task title cannot be empty.')
       return
     }
 
     setIsCreating(true)
-    setErrorMessage('')
+    setActionError('')
 
     try {
       const newTask = await taskApi.createTask({ title })
@@ -49,36 +53,88 @@ export function TodoPage() {
       setDraft('')
     } catch (error) {
       if (error instanceof Error) {
-        setErrorMessage(error.message)
+        setActionError(error.message)
       } else {
-        setErrorMessage('Could not create task.')
+        setActionError('Could not create task.')
       }
     } finally {
       setIsCreating(false)
     }
   }
 
+ // -----------тут про логіку видалення завадання 
+
   async function handleDeleteTask(taskId: string) {
     setRemovingTaskId(taskId)
-    setErrorMessage('')
+    setActionError('')
 
     try {
       await taskApi.deleteTask(taskId)
       setTasks((currentTasks) => currentTasks.filter((task) => task.id !== taskId))
     } catch (error) {
       if (error instanceof Error) {
-        setErrorMessage(error.message)
+        setActionError(error.message)
       } else {
-        setErrorMessage('Could not delete task.')
+        setActionError('Could not delete task.')
       }
     } finally {
       setRemovingTaskId('')
     }
   }
 
+  // -----------тут про внесення змін 
+
+  async function handleEditTask(taskId: string) {
+    const task = tasks.find((item) => item.id === taskId)
+
+    if (!task) {
+      return
+    }
+
+    const nextTitle = window.prompt('Give this task a better name:', task.title)
+
+    if (nextTitle === null) {
+      return
+    }
+
+    const cleanTitle = nextTitle.trim()
+
+    if (!cleanTitle) {
+      setActionError('Task title cannot be empty.')
+      return
+    }
+
+    setEditingTaskId(taskId)
+    setActionError('')
+
+    try {
+      const updatedTask = await taskApi.updateTask(taskId, { title: cleanTitle })
+
+      setTasks((currentTasks) =>
+        currentTasks.map((item) => {
+          if (item.id === taskId) {
+            return updatedTask
+          }
+
+          return item
+        }),
+      )
+    } catch (error) {
+      if (error instanceof Error) {
+        setActionError(error.message)
+      } else {
+        setActionError('Could not update task.')
+      }
+    } finally {
+      setEditingTaskId('')
+    }
+  }
+
   useEffect(() => {
     void loadTasks()
   }, [])
+
+// спрощений приклад реалізації фільтрації лише виконані чи всі
 
   const visibleTasks = tasks.filter((task) => {
     if (currentFilter === 'active') {
@@ -95,7 +151,7 @@ export function TodoPage() {
           <p className="todo-page__eyebrow">Todo app</p>
           <h1 className="todo-page__title">Keep your tasks in one place.</h1>
           <p className="todo-page__description">
-            This page already loads tasks from the server. Now the form can create, and the list can delete.
+            This page already loads tasks from the server. Now it can create, remove and rename them too.
           </p>
           <div className="todo-page__highlights">
             <span className="todo-page__pill">Responsive base</span>
@@ -121,21 +177,23 @@ export function TodoPage() {
                 onSubmit={handleCreateTask}
                 isSubmitting={isCreating}
               />
+
+              {actionError ? <p className="section-head__copy">{actionError}</p> : null}
             </section>
 
             <section className="card-surface todo-page__section">
               <div className="section-head">
                 <div>
                   <h2 className="section-head__title">Tasks</h2>
-                  <p className="section-head__copy">This list reads data from the backend and now also removes tasks.</p>
+                  <p className="section-head__copy">This list now loads, creates, removes and updates tasks.</p>
                 </div>
               </div>
 
               {isLoading ? (
                 <p className="section-head__copy">Loading ...</p>
-              ) : errorMessage ? (
+              ) : pageError ? (
                 <div className="content-stack">
-                  <p className="section-head__copy">{errorMessage}</p>
+                  <p className="section-head__copy">{pageError}</p>
                   <button className="button button--secondary" type="button" onClick={() => void loadTasks()}>
                     Try again
                   </button>
@@ -144,8 +202,9 @@ export function TodoPage() {
                 <TaskList
                   tasks={visibleTasks}
                   onDelete={handleDeleteTask}
-                  onEdit={() => undefined}
+                  onEdit={handleEditTask}
                   removingTaskId={removingTaskId}
+                  editingTaskId={editingTaskId}
                 />
               )}
             </section>
@@ -159,7 +218,7 @@ export function TodoPage() {
               <div className="section-head">
                 <div>
                   <h2 className="section-head__title">Next step</h2>
-                  <p className="section-head__copy">We will connect editing tasks next.</p>
+                  <p className="section-head__copy">After this we can move to frontend tests and visual polish.</p>
                 </div>
               </div>
             </section>

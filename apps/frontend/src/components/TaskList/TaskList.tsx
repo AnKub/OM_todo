@@ -8,9 +8,16 @@ type TaskListProps = {
   onDelete: (taskId: string) => void
   onEdit: (taskId: string) => void
   removingTaskId?: string
+  editingTaskId?: string
 }
 
-export function TaskList({ tasks, onDelete, onEdit, removingTaskId = '' }: TaskListProps) {
+export function TaskList({
+  tasks,
+  onDelete,
+  onEdit,
+  removingTaskId = '',
+  editingTaskId = '',
+}: TaskListProps) {
   if (tasks.length === 0) {
     return <EmptyState />
   }
@@ -24,6 +31,7 @@ export function TaskList({ tasks, onDelete, onEdit, removingTaskId = '' }: TaskL
           onDelete={onDelete}
           onEdit={onEdit}
           isBusy={removingTaskId === task.id}
+          isEditing={editingTaskId === task.id}
         />
       ))}
     </div>

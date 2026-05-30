@@ -3,12 +3,19 @@ import './TaskItem.scss'
 
 type TaskItemProps = {
   isBusy?: boolean
+  isEditing?: boolean
   task: Task
   onDelete: (taskId: string) => void
   onEdit: (taskId: string) => void
 }
 
-export function TaskItem({ isBusy = false, task, onDelete, onEdit }: TaskItemProps) {
+export function TaskItem({
+  isBusy = false,
+  isEditing = false,
+  task,
+  onDelete,
+  onEdit,
+}: TaskItemProps) {
   const createdAt = new Intl.DateTimeFormat('uk-UA', {
     day: '2-digit',
     month: 'short',
@@ -20,7 +27,7 @@ export function TaskItem({ isBusy = false, task, onDelete, onEdit }: TaskItemPro
       <div className="task-item__content">
         <div>
           <h3 className="task-item__title">{task.title}</h3>
-          <p className="task-item__copy">Editable item placeholder with delete action and smooth appearance.</p>
+          <p className="task-item__copy">Small task, big plans.</p>
         </div>
       </div>
 
@@ -31,10 +38,21 @@ export function TaskItem({ isBusy = false, task, onDelete, onEdit }: TaskItemPro
         </div>
 
         <div className="task-item__actions">
-          <button className="button button--secondary" type="button" onClick={() => onEdit(task.id)}>
-            Edit
+          <button
+            className="button button--secondary"
+            type="button"
+            onClick={() => onEdit(task.id)}
+            disabled={isEditing || isBusy}
+          >
+            {isEditing ? 'Saving...' : 'Edit'}
           </button>
-          <button className="button button--ghost" type="button" disabled={isBusy} onClick={() => onDelete(task.id)}>
+
+          <button
+            className="button button--ghost"
+            type="button"
+            disabled={isBusy || isEditing}
+            onClick={() => onDelete(task.id)}
+          >
             {isBusy ? 'Removing...' : 'Delete'}
           </button>
         </div>
