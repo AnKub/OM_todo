@@ -121,6 +121,10 @@
   gap: 24px;
 }
 
+.todo-page__workspace > .content-stack {
+  min-width: 0;
+}
+
 .todo-page__section {
   padding: 24px;
 }
