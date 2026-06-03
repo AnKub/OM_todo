@@ -234,7 +234,7 @@ export function TodoPage() {
                 <div>
                   <h2 className="section-head__title">Visual direction</h2>
                   <p className="section-head__copy">
-                    Obsidian and Deep Forest for dark mode. Desert Sand and Royal Indigo for light mode.
+                    This block can be used for an additional widget.
                   </p>
                 </div>
               </div>
